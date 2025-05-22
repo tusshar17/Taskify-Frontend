@@ -17,6 +17,7 @@ const Users = () => {
   
     const [page, setPage] = useState(1)
     const [total, setTotal] = useState(0)
+    const [sortBy, setSortBy] = useState('updated_at')
     const limit = 6
   
     const [activeModal, setActiveModal] = useState(null) // 'add' or 'edit' or 'delete' or null
@@ -30,13 +31,13 @@ const Users = () => {
 
     useEffect(()=>{
         fetchUsers()
-      }, [page])
+      }, [page, sortBy])
     
       const fetchUsers = async () => {
         setLoading(true)
         setError(null)
         try{
-          const res = await getUsers(page, limit)
+          const res = await getUsers(page, limit, sortBy)
           console.log(res)
           setUsersRes(res.data)
           setTotal(res.data.pages)
@@ -52,7 +53,7 @@ const Users = () => {
 
   return (
     <div className='w-full flex flex-col flex-wrap gap-8 items-center justify-start mt-8 px-12'>
-      <PageNavigation current_page={usersRes?.current_page} total_page={total} increment_page={increment_page} decrement_page={decrement_page}/>
+      <PageNavigation current_page={usersRes?.current_page} total_page={total} increment_page={increment_page} decrement_page={decrement_page} onSortChange={setSortBy}/>
 
       {loading && <p>Loading......</p>}
 
