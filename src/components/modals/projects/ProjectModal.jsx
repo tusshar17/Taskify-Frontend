@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Button from '../../ui/Button'
 import { CheckIcon, XIcon } from 'lucide-react'
 import {createProject, updateProject} from '../../../api/projects'
@@ -7,6 +7,12 @@ const ProjectModal = ({isOpen, onClose, onSave, projectToEdit, showToast}) => {
 
     const [name, setName] = useState('')
     const [validationError, setValidationError] = useState(null)
+
+    const projectNameInputRef = useRef(null)
+
+    useEffect(()=>{
+        projectNameInputRef.current.focus()
+    }, [])
 
     useEffect(()=>{
         if (projectToEdit) {
@@ -70,6 +76,7 @@ const ProjectModal = ({isOpen, onClose, onSave, projectToEdit, showToast}) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             className="w-full p-2 border rounded"
+            ref={projectNameInputRef}
             placeholder='Name'
             value={name}
             onChange={(e) => setName(e.target.value)}
