@@ -17,6 +17,7 @@ const Home = () => {
 
   const [page, setPage] = useState(1)
   const [total, setTotal] = useState(0)
+  const [sortBy, setSortBy] = useState('updated_at')
   const limit = 6
 
   const [activeModal, setActiveModal] = useState(null) // 'add' or 'edit' or 'delete' or null
@@ -30,13 +31,13 @@ const Home = () => {
 
   useEffect(()=>{
     fetchProjects()
-  }, [page])
+  }, [page, sortBy])
 
   const fetchProjects = async () => {
     setLoading(true)
     setError(null)
     try{
-      const res = await getProjects(page, limit)
+      const res = await getProjects(page, limit, sortBy)
       setProjectsRes(res.data)
       setTotal(res.data.pages)
     } catch (err) {
@@ -51,7 +52,7 @@ const Home = () => {
 
   return (
     <div className='w-full flex flex-col flex-wrap gap-8 items-center justify-start mt-8 px-12'>
-      <PageNavigation current_page={projectsRes?.current_page} total_page={total} increment_page={increment_page} decrement_page={decrement_page} section_title={"Projects"}/>
+      <PageNavigation current_page={projectsRes?.current_page} total_page={total} increment_page={increment_page} decrement_page={decrement_page} section_title={"Projects"} onSortChange={setSortBy}/>
 
       {loading && <p>Loading......</p>}
 

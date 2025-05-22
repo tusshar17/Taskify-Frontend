@@ -21,6 +21,7 @@ const Task = () => {
 
   const [page, setPage] = useState(1)
   const [total, setTotal] = useState(0)
+  const [sortBy, setSortBy] = useState('updated_at')
   const limit = 10
 
   const [activeModal, setActiveModal] = useState(null) // 'add' or 'edit' or 'delete' or null
@@ -35,7 +36,7 @@ const Task = () => {
   useEffect(()=>{
     fetchTasks()
     fetchProjectById(project_id)
-  }, [page])
+  }, [page, sortBy])
 
   const fetchProjectById = async (project_id) => {
     try{
@@ -50,7 +51,7 @@ const Task = () => {
     setTasksLoading(true)
     setTaskError(null)
     try{
-      const res = await getTasks(page, limit, project_id)
+      const res = await getTasks(page, limit, project_id, sortBy)
       console.log(res);
       setTasksRes(res.data)
       setTotal(res.data.pages)
@@ -83,7 +84,7 @@ const Task = () => {
 
   return (
     <div className='w-full flex flex-col flex-wrap gap-8 items-center justify-start mt-8 px-12'>
-      <PageNavigation section_title={`Project: ${project?.name}`} current_page={tasksRes?.current_page} total_page={total} increment_page={increment_page} decrement_page={decrement_page}/>
+      <PageNavigation section_title={`Project: ${project?.name}`} current_page={tasksRes?.current_page} total_page={total} increment_page={increment_page} decrement_page={decrement_page} onSortChange={setSortBy}/>
 
       {tasksLoading && <p>Loading......</p>}
 
