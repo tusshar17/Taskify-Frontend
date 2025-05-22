@@ -4,10 +4,11 @@ import PageNavigation from '../../components/ui/PageNavigation'
 import TaskCard from '../../components/ui/TaskCard'
 import {exportTasks, getTasks} from "../../api/tasks"
 import Button from '../../components/ui/Button'
-import { FileDownIcon, PlusIcon } from 'lucide-react'
+import { FileDownIcon, FileInputIcon, PlusIcon } from 'lucide-react'
 import Toast from '../../components/ui/Toast'
 import TaskModal from '../../components/modals/tasks/TaskModal'
 import { getProjectById } from '../../api/projects'
+import ImportTaskModal from '../../components/modals/tasks/ImportTasksModal'
 
 const Task = () => {
   const {project_id} = useParams()
@@ -67,7 +68,7 @@ const Task = () => {
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'filename.xls'); // 💡 change name as needed
+      link.setAttribute('download', 'filename.xls');
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -110,6 +111,7 @@ const Task = () => {
       <div className='fixed bottom-16 flex flex-row gap-8'>
       <Button label={"Create New Task"} icon={<PlusIcon/>} iconPosition={"left"} size='md' onClick={()=>{setActiveModal('add'); setSelectedTask(null)}}/>
       <Button label={"Export All Tasks"} icon={<FileDownIcon/>} iconPosition={"left"} size='md' variant='secondary' onClick={()=>{handleExportTasks(project_id)}}/>
+      <Button label={"Import Tasks"} icon={<FileInputIcon/>} iconPosition={"left"} size='md' variant='secondary' onClick={()=>{setActiveModal('import')}}/>
       </div>
 
       {toast && (<Toast message={toast} type={"error"} onclose={()=>setToast(null)}/>)}
@@ -120,6 +122,10 @@ const Task = () => {
 
       {activeModal === 'edit' && selectedTask && (
         <TaskModal project_id={project_id} isOpen={true} taskToEdit={selectedTask} onClose={()=>setActiveModal(null)} onSave={()=>{setActiveModal(null); fetchTasks()}} showToast={showToast}/>
+      )}
+
+       {activeModal === 'import' && (
+        <ImportTaskModal project_id={project_id} isOpen={true} onClose={()=>setActiveModal(null)} onSave={()=>{setActiveModal(null); fetchTasks()}} showToast={showToast}/>
       )}
 
     </div>
